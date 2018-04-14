@@ -1,4 +1,7 @@
+//Pull in the .env keys
 require("dotenv").config();
+
+//Pull the key exports
 var keylist = require("./keys.js");
 
 //Spotify packages & keys
@@ -6,15 +9,25 @@ var keylist = require("./keys.js");
 var Spotify = require('node-spotify-api');
 //Put the Spotify keys in a variable
 var S = new Spotify(keylist.spotify);
-//console.log(S);
+
+
+//Twitter packages & keys
+//Put the Twitter package in a variable
+var Twitter = require('twitter-request')
+//Put the Twitter keys in a variable
+var T = new Twitter(keylist.twitter);
 
 //Capture the user's command to feed into the Switch statement
 var a = process.argv[2];
 
-
+//Switch Statement using the command (process.argv[2]) as the argument
 switch (a) {
+    //First Case is Spotify Search
     case 'spotify-this-song':
         searchSpotify();
+        break;
+    case 'my-tweets':
+        getTweets();
         break;
 }
 
@@ -70,4 +83,10 @@ function checkDefault(arr, songName) {
         }
         arr.push(defaultSong);
     }
+}
+
+
+//Function to run the Twitter piece
+function getTweets() {
+
 }
