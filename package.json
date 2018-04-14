@@ -19,8 +19,13 @@
   "homepage": "https://github.com/travisvadnais/liri-node-app#readme",
   "dependencies": {
     "dotenv": "^5.0.1",
+    "http": "0.0.0",
     "node-spotify-api": "^1.0.7",
+    "omdb": "^0.8.0",
+    "omdb-client": "^2.0.0",
     "request": "^2.85.0",
+    "should": "^13.2.1",
+    "stream": "0.0.2",
     "twit": "^2.2.9",
     "twitter": "^1.7.1",
     "twitter-request": "^0.5.5"
