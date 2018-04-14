@@ -32,7 +32,6 @@ function searchSpotify() {
     for (var i = 3; i < process.argv.length; i++) {
         titleTrack += process.argv[i] + " ";
     }
-    //console.log(titleTrack);
 
     //Search Spotify using the keys (S)
     S.search({type: 'track', query: titleTrack, limit: 5}, function(err, data) {
@@ -41,16 +40,34 @@ function searchSpotify() {
             return console.log("Error Occurred: " + err);
         }
 
-        //If no errors, we're going to add an object for each album containing the song, up to 5.
+        //If no errors, add an object into the albumList array for each album containing the song, up to 5.
         for (var i = 0; i < data.tracks.items.length; i++) {
             albumList[i] = {
                 "Song Choice": i + 1,
                 "Band Name": data.tracks.items[i].album.artists[0].name,
-                "Song Title": titleTrack,
                 "Song Preview": data.tracks.items[i].preview_url,
                 "Album Title": data.tracks.items[i].album.name
             }
         }
+        //Run a fx to make sure at least 1 result came back
+        checkDefault(albumList, titleTrack);
+
+        //Log the results
+        console.log("Results for: " + titleTrack);
         console.log(albumList);
-    }); //End Search
+    }); //End Spotify Search
+}
+
+//This will check to see if any songs were returned and, if not, suggest Ace of Base as a default
+function checkDefault(arr, songName) {
+    if (arr.length == 0) {
+        var defaultSong = {
+            "No results for": songName + " Try this instead!",
+            "Band Name": "Ace of Base",
+            "Song Title": "The Sign",
+            "Song Preview": 'https://p.scdn.co/mp3-preview/5ca0168d6b58e0f993b2b741af90ecc7c9b16893?cid=b8831b3b77394f828a1e4e53ab3d61fd',
+            "Album Title": 'The Sign (US Album) [Remastered]'
+        }
+        arr.push(defaultSong);
+    }
 }
