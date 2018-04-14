@@ -13,9 +13,9 @@ var S = new Spotify(keylist.spotify);
 
 //Twitter packages & keys
 //Put the Twitter package in a variable
-var Twitter = require('twitter-request')
+var Twit = require('twit') 
 //Put the Twitter keys in a variable
-var T = new Twitter(keylist.twitter);
+var T = new Twit(keylist.twitter);
 
 //Capture the user's command to feed into the Switch statement
 var a = process.argv[2];
@@ -89,4 +89,28 @@ function checkDefault(arr, songName) {
 //Function to run the Twitter piece
 function getTweets() {
 
+    //Set up an array for the Tweet objects
+    var tweetList = [];
+
+    //Pre-Made fx from docs to req last 20 user tweets
+    //NOTE: This uses your key, so you can't search for someone else's tweets
+    T.get("statuses/user_timeline", {count: 20}, function(error, tweets, response) {
+        
+        //Log the errors
+        if(error) {
+            console.log(error);
+        } 
+        else {
+            //If no errors, get 20 most-recent tweets and create an object for each.
+            for (var i = 0; i < tweets.length; i++) {
+                //Push each tweet object into the array
+                tweetList[i] = {
+                    "Tweet_Number": i + 1,
+                    "Tweet": tweets[i].text,
+                    "Timestamp": tweets[i].created_at
+                }
+            }
+            console.log(tweetList);
+        }
+    })
 }
