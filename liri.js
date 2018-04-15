@@ -110,7 +110,6 @@ function checkDefault(arr, songName) {
     };
 };
 
-
 //Function to run the Twitter piece
 function getTweets() {
 
