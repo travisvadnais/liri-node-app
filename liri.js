@@ -39,6 +39,9 @@ switch (a) {
     case 'do-what-it-says':
         pullFromTxtFile();
         break;
+    case 'help':
+        helpMenu();
+        break;
 };
 
 //Function will run when Spotify is the command
@@ -56,6 +59,17 @@ function searchSpotify() {
     for (var i = 3; i < inputs.length; i++) {
         titleTrack += inputs[i] + " ";
     };
+
+    //Add inputs to the log file
+    fs.appendFile("log.txt", ["\n", process.argv[2], titleTrack], function(err) {
+        if (err) throw err;
+    })
+
+    //If no selection was made (i.e. inputs[3]), run the aceOfBase fx and stop this fx.
+    if (!inputs[3]) {
+        aceOfBase();
+        return;
+    }
 
     //Search Spotify using the keys (S)
     S.search({type: 'track', query: titleTrack, limit: 5}, function(err, data) {
@@ -103,6 +117,9 @@ function getTweets() {
     //Set up an array for the Tweet objects
     var tweetList = [];
 
+    fs.appendFile("log.txt", ["\n", process.argv[2]], function(err) {
+        if (err) throw err;
+    });
     //Pre-Made fx from docs to req last 20 user tweets
     //NOTE: This uses your key, so you can't search for someone else's tweets
     T.get("statuses/user_timeline", {count: 20}, function(error, tweets, response) {
@@ -138,6 +155,11 @@ function getMovieData() {
     for (var i = 3; i < inputs.length; i++) {
         movieName += inputs[i] + " ";
     };
+
+    //Log the command and movie name
+    fs.appendFile("log.txt", ["\n", process.argv[2], movieName], function(err) {
+        if (err) throw err;
+    });
 
     //Checks for user input AFTER the command.  If none, enter in Mr. Nobody
     if (!inputs[3]) {
@@ -180,14 +202,25 @@ function getMovieData() {
     });
 };
 
+//this fx will pull data from the random.txt file
 function pullFromTxtFile() {
+
+    //Log the command
+    fs.appendFile("log.txt", ["\n", process.argv[2]], function(err) {
+        if (err) throw err;
+    });
+
     fs.readFile("random.txt", "utf8", function(error, data) {
+        //Put the data into an array, split by the "," delimiter
         var randomArray = data.split(",");
+        //Grab the song data (default was "I want it that way")
         var song = randomArray[1];
+        //Run the bsb (backstreet boys fx)
         bsb(song);
     });
 };
 
+//This will run when pulling data from the txt file
 function bsb(song) {
     //This will be an array of album objects
     var albumList = [];
@@ -208,4 +241,46 @@ function bsb(song) {
         };
         console.log(albumList);
     });
+};
+
+//This fx is used when the user doesn't in put a song
+function aceOfBase() {
+
+    //All we're doing is setting up an object w/ hardcoded Ace of Base song info & logging it
+    var defaultSong = {
+        "Band Name": "Ace of Base",
+        "Song Title": "The Sign",
+        "Song Preview": 'https://p.scdn.co/mp3-preview/5ca0168d6b58e0f993b2b741af90ecc7c9b16893?cid=b8831b3b77394f828a1e4e53ab3d61fd',
+        "Album Title": 'The Sign (US Album) [Remastered]'
+    };
+    console.log("You didn't select a song.  Try this one instead!");
+    console.log(defaultSong);
+};
+
+//Function just builds out and prints a help menu object if the user needs it.
+function helpMenu() {
+
+    //Log the command
+    fs.appendFile("log.txt", ["\n", process.argv[2]], function(err) {
+        if (err) throw err;
+    });
+
+    var menuOptions = {
+        "To search for a song in Spotify": {
+            "Command": "spotify-this-song",
+            "Optional": "<Enter Song Title (w/ no brackets or quotes)>"
+        },
+        "To search for a movie in OMDB": {
+            "Command": "movie-this",
+            "Optional": "<Enter Movie Title (w/ no brackets or quotes)>"
+        },
+        "To review your 20 most-recent Tweets": {
+            "Command": "my-tweets"
+        },
+        "To pull a song from the Txt File": {
+            "Command": "do-what-it-says"
+        }
+    };
+    console.log("Remember, all commands are preceded with: node liri ");
+    console.log(menuOptions);
 };
