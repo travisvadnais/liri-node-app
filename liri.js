@@ -137,6 +137,11 @@ switch (a) {
     case 'help':
         helpMenu();
         break;
+    default:
+        console.log("Not a valid command.  Please choose one of the following options:");
+        helpMenu();
+        break;
+
 };
 
 //Function will run when Spotify is the command
@@ -272,11 +277,6 @@ function getMovieData() {
         //Log the errors
         if(err) {
             return console.error(err);
-        };
-
-        //Message in case the movie isn't found.
-        if(!movie) {
-            return console.log('Movie not found!  Please Try Again!');
         }
 
         //If the movie is found, set up the movie data object to pull all pertinent info
@@ -409,12 +409,9 @@ function liribotOmdb(movieReq) {
 
         //Log the errors
         if(err) {
-            return console.error(err);
-        };
-
-        //Message in case the movie isn't found.
-        if(!movie) {
-            return console.log('Movie not found!  Please Try Again!');
+            console.error(err);
+            inquirerMenu();
+            return;
         }
 
         //If the movie is found, set up the movie data object to pull all pertinent info
