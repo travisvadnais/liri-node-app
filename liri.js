@@ -2,6 +2,9 @@
 require("dotenv").config();
 var fs = require("fs");
 
+//Adding this in case I want to build in prompting
+var inquirer = require("inquirer");
+
 //Pull the key exports
 var keylist = require("./keys.js");
 
@@ -21,6 +24,94 @@ var T = new Twit(keylist.twitter);
 //OMDB package
 var omdb = require('omdb-client');
 
+
+//***There are two ways to work this app - first is by running a node liri w/ no command which will initiate the prompt menu below***//
+
+//Naked command line - launch prompts w/ menu options
+if (!process.argv[2]) {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "How can I help??",
+            choices: ["Get movie info", "Get song info", "Get Tweets", "Surprise Me!", "Exit"],
+            name: "requestType"
+        }
+    ])
+    //Take choice and throw it into a switch statement
+    .then(function(userRequest) {
+        switch (userRequest.requestType) {
+            case "Get movie info":
+                //Ask what movie to look for
+                inquirer.prompt([
+                    {
+                        type: "input",
+                        message: "Which movie should I look for?",
+                        name: "movie_selection"
+                    }
+                ])
+                //Send movie request to the liribot fx
+                .then(function(movieRequest) {
+                    liribotOmdb(movieRequest.movie_selection);
+                });            
+                break;
+            
+            //Ask what song to look for
+            case "Get song info":
+                inquirer.prompt([
+                    {
+                        type: "input",
+                        message: "What song should I look for?",
+                        name: "song_selection"
+                    }
+                ])
+                //Send it to liribot
+                .then(function(songRequest){
+                    liribotSpotify(songRequest.song_selection);
+                });
+                break;
+            //Figure out whose Tweets we're looking for
+            case "Get Tweets":
+                inquirer.prompt([
+                    {
+                        type: "list",
+                        message: "Whose Tweets do you want to see?",
+                        choices: ["Mine!", "Someone Else's!"],
+                        name: "Twitter_choice"
+                    }
+                ])
+                .then(function(whoseTweets){
+                    //If someone else's, prompt for Twitter handle
+                    if (whoseTweets.Twitter_choice == "Someone Else's!") {
+                        inquirer.prompt([
+                            {
+                                type: "input",
+                                message: "What is their EXACT Twitter handle?",
+                                name: "Twitter_handle"
+                            }
+                        ])
+                        //Shoot the handle to the liribot
+                        .then(function(handle) {
+                            liribotTwitter(handle.Twitter_handle);
+                        });
+                    }
+                    //Otherwise, look for your own tweets
+                    else {
+                        liribotTwitter();
+                    }
+                });
+                break;
+            //Surprise me will pull from the random.txt doc and essentially run the BSB fx
+            case "Surprise Me!":
+                pullFromTxtFile();
+                break;
+            case "Exit":
+                break;
+        }
+    });
+};
+
+//***THE SECOND WAY TO USE THE APP IS BY COMMAND LINE W/ NO PROMPTS***//
+
 //Capture the user's command to feed into the Switch statement
 var a = process.argv[2];
 
@@ -30,7 +121,7 @@ switch (a) {
     case 'spotify-this-song':
         searchSpotify();
         break;
-    case 'my-tweets':
+    case 'get-tweets':
         getTweets();
         break;
     case 'movie-this':
@@ -115,13 +206,13 @@ function getTweets() {
 
     //Set up an array for the Tweet objects
     var tweetList = [];
+    var name = process.argv[3];
 
-    fs.appendFile("log.txt", ["\n", process.argv[2]], function(err) {
+    fs.appendFile("log.txt", ["\n", [process.argv[2], name]], function(err) {
         if (err) throw err;
     });
     //Pre-Made fx from docs to req last 20 user tweets
-    //NOTE: This uses your key, so you can't search for someone else's tweets
-    T.get("statuses/user_timeline", {count: 20}, function(error, tweets, response) {
+    T.get("statuses/user_timeline", {screen_name: name, count: 20}, function(error, tweets, response) {
         
         //Log the errors
         if(error) {
@@ -205,7 +296,7 @@ function getMovieData() {
 function pullFromTxtFile() {
 
     //Log the command
-    fs.appendFile("log.txt", ["\n", process.argv[2]], function(err) {
+    fs.appendFile("log.txt", ["\n", "do-what-it-says"], function(err) {
         if (err) throw err;
     });
 
@@ -274,7 +365,7 @@ function helpMenu() {
             "Optional": "<Enter Movie Title (w/ no brackets or quotes)>"
         },
         "To review your 20 most-recent Tweets": {
-            "Command": "my-tweets"
+            "Command": "get-tweets"
         },
         "To pull a song from the Txt File": {
             "Command": "do-what-it-says"
@@ -282,4 +373,133 @@ function helpMenu() {
     };
     console.log("Remember, all commands are preceded with: node liri ");
     console.log(menuOptions);
+};
+
+//Movie function when initiated from Inquirer
+function liribotOmdb(movieReq) {
+    
+    //Log the command and movie name
+    fs.appendFile("log.txt", ["\n", "movie-this", movieReq], function(err) {
+        if (err) throw err;
+    });
+
+    //Checks for user input AFTER the command.  If none, enter in Mr. Nobody
+    if (!movieReq) {
+        console.log("You didn't pick a movie, so please enjoy this one instead!");
+        movieReq = "Mr. Nobody";
+    };
+    
+    //Set up Parameters argument w/ the API Key & movie name
+    var params = {
+        "apiKey": "trilogy",
+        "title": movieReq
+    };
+
+    //Run the GET request
+    omdb.get(params, function(err, movie) {
+
+        //Log the errors
+        if(err) {
+            return console.error(err);
+        };
+
+        //Message in case the movie isn't found.
+        if(!movie) {
+            return console.log('Movie not found!  Please Try Again!');
+        }
+
+        //If the movie is found, set up the movie data object to pull all pertinent info
+        else {
+            var movieData = {
+                "Title": movie.Title,
+                "Release Year": movie.Year,
+                "IMDB Rating": movie.imdbRating,
+                "Rotten Tomatoes Rating": movie.Ratings[1].Value,
+                "Country": movie.Country,
+                "Language": movie.Language,
+                "Plot": movie.Plot,
+                "Actors": movie.Actors
+            }
+            console.log(movieData);
+        }
+    });
+};
+
+//Song function when initiated from Inquirer
+function liribotSpotify(songReq) {
+
+    //Log the command and movie name
+    fs.appendFile("log.txt", ["\n", "spotify-this-song", songReq], function(err) {
+        if (err) throw err;
+    });
+
+    //This will be an array of album objects
+    var albumList = [];
+
+    //If no selection was made (i.e. inputs[3]), run the aceOfBase fx and stop this fx.
+    if (!songReq) {
+        aceOfBase();
+        return;
+    }
+
+    //Search Spotify using the keys (S)
+    S.search({type: 'track', query: songReq, limit: 5}, function(err, data) {
+        //Check for errors
+        if (err) {
+            return console.log("Error Occurred: " + err);
+        };
+
+        //If no errors, add an object into the albumList array for each album containing the song, up to 5.
+        for (var i = 0; i < data.tracks.items.length; i++) {
+            albumList[i] = {
+                "Song Choice": i + 1,
+                "Band Name": data.tracks.items[i].album.artists[0].name,
+                "Song Preview": data.tracks.items[i].preview_url,
+                "Album Title": data.tracks.items[i].album.name
+            };
+        };
+        //Run a fx to make sure at least 1 result came back
+        checkDefault(albumList, songReq);
+
+        //Log the results
+        console.log("Results for: " + songReq);
+        console.log(albumList);
+    }); //End Spotify Search
+
+    
+
+
+}
+
+//Twitter function when initiated from Inquirer
+function liribotTwitter(handle) {
+
+    //Log the command and movie name
+    fs.appendFile("log.txt", ["\n", "get-tweets", handle], function(err) {
+        if (err) throw err;
+    });
+
+    //Set up an array for the Tweet objects
+    var tweetList = [];
+
+    //Pre-Made fx from docs to req last 20 user tweets
+    T.get("statuses/user_timeline", {screen_name: handle, count: 20}, function(error, tweets, response) {
+        
+        //Log the errors
+        if(error) {
+            console.log(error);
+        } 
+        else {
+            //If no errors, get 20 most-recent tweets and create an object for each.
+            for (var i = 0; i < tweets.length; i++) {
+                //Push each tweet object into the array
+                tweetList[i] = {
+                    "Tweet_Number": i + 1,
+                    "Tweet": tweets[i].text,
+                    "Timestamp": tweets[i].created_at
+                };
+            };
+            console.log(tweetList);
+        };
+    });
 };
