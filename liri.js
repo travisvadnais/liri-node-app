@@ -119,6 +119,7 @@ function inquirerMenu(){
 //Capture the user's command to feed into the Switch statement
 var a = process.argv[2];
 
+if (a) {
 //Switch Statement using the command (process.argv[2]) as the argument
 switch (a) {
     //First Case is Spotify Search
@@ -141,7 +142,7 @@ switch (a) {
         console.log("Not a valid command.  Please choose one of the following options:");
         helpMenu();
         break;
-
+}
 };
 
 //Function will run when Spotify is the command
@@ -173,18 +174,21 @@ function searchSpotify() {
 
     //Search Spotify using the keys (S)
     S.search({type: 'track', query: titleTrack, limit: 5}, function(err, data) {
+        
         //Check for errors
         if (err) {
             return console.log("Error Occurred: " + err);
         };
 
+        var band = data.tracks.items;
+
         //If no errors, add an object into the albumList array for each album containing the song, up to 5.
-        for (var i = 0; i < data.tracks.items.length; i++) {
+        for (var i = 0; i < band.length; i++) {
             albumList[i] = {
                 "Song Choice": i + 1,
-                "Band Name": data.tracks.items[i].album.artists[0].name,
-                "Song Preview": data.tracks.items[i].preview_url,
-                "Album Title": data.tracks.items[i].album.name
+                "Band Name": band[i].album.artists[0].name,
+                "Song Preview": band[i].preview_url,
+                "Album Title": band[i].album.name
             };
         };
         //Run a fx to make sure at least 1 result came back
@@ -378,6 +382,9 @@ function helpMenu() {
         },
         "To pull a song from the Txt File": {
             "Command": "do-what-it-says"
+        },
+        "To have LIRI guide you through": {
+            "Command": "node liri"
         }
     };
     console.log("Remember, all commands are preceded with: node liri ");
@@ -457,13 +464,16 @@ function liribotSpotify(songReq) {
             return console.log("Error Occurred: " + err);
         };
 
+        //Put data info in a variable for clarity
+        var band = data.tracks.items;
+
         //If no errors, add an object into the albumList array for each album containing the song, up to 5.
-        for (var i = 0; i < data.tracks.items.length; i++) {
+        for (var i = 0; i < band.length; i++) {
             albumList[i] = {
                 "Song Choice": i + 1,
-                "Band Name": data.tracks.items[i].album.artists[0].name,
-                "Song Preview": data.tracks.items[i].preview_url,
-                "Album Title": data.tracks.items[i].album.name
+                "Band Name": band[i].album.artists[0].name,
+                "Song Preview": band[i].preview_url,
+                "Album Title": band[i].album.name
             };
         };
         //Run a fx to make sure at least 1 result came back

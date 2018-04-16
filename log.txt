@@ -1,31 +1,6 @@
 
-,
-,do-what-it-says
-,get-tweets,
-,spotify-this-song,master of puppets
-,spotify-this-song,
-,spotify-this-song,
-,movie-this,ghosts of mars
-,do-what-it-says
-,do-what-it-says
-,do-what-it-says
-,get-tweets,
-,spotify-this-song,for whom the bell tolls
-,movie-this,the descent
-,do-what-it-says
-,spotify-this-song,my own prison
-,spotify-this-song,
-,movie-this,
-,movie-this,asdfasdf
-,movie-this,asdfasdf
-,movie-this,asdfasdf
-,movie-this,adsfsadfasdf
-,movie-this,asdfsadf
-,movie-this,asdfasdfa
-,movie-this,asdfsadfasdf
-,movie-this,asdfasdfasdf
-,movie-this,asdfasdfa
-,movie-this,asdfasdfasdf
-,movie-this,
-,movie-this,asdfasdfasdf 
-,abah
+,get-tweets,realdonaldtrummp
+,get-tweets,realdonaldtrump
+,spotify-this-song,i stand alone 
+,spotify-this-song,I stand alone
+,spotify-this-song,leper messiah
