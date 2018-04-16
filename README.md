@@ -4,6 +4,19 @@ Liri Node App Week 10 Assignment
 ## HOW TO USE IT
 
 * Open the liri.js document in your command prompt;
+* There are two ways to operate this app:
+
+# AUTOMATED VERSION VIA MENU OPTIONS
+
+* Bring up the menu with 'node liri' in the command prompt (no quotes)
+    *A menu option will appear.  Use the arrow keys to highlight the option you want and hit the Enter key
+    *See below for a breakdown of what each option does
+    *Follow the prompts to execute the function
+* After a function executes, the menu option will populate again and allow another selection
+* There is an 'Exit' option to leave the menu
+
+# MANUAL INPUT
+
 * To execute a function, enter 'node liri' in the command prompt (no quotes) followed by one of the following 5 functions:
 
     1. **spotify-this-song**

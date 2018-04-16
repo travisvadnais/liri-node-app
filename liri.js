@@ -27,8 +27,12 @@ var omdb = require('omdb-client');
 
 //***There are two ways to work this app - first is by running a node liri w/ no command which will initiate the prompt menu below***//
 
-//Naked command line - launch prompts w/ menu options
+//Test for naked command line.  If so, run the Inquirer menu
 if (!process.argv[2]) {
+    inquirerMenu()
+};
+
+function inquirerMenu(){
     inquirer.prompt([
         {
             type: "list",
@@ -330,6 +334,11 @@ function bsb(song) {
             };
         };
         console.log(albumList);
+
+        //If we're running this function off of the prompt menu (not hardcoded argument), run the menu again
+        if (!process.argv[2]) {
+            inquirerMenu();
+        }
     });
 };
 
@@ -422,6 +431,7 @@ function liribotOmdb(movieReq) {
             }
             console.log(movieData);
         }
+        inquirerMenu();
     });
 };
 
@@ -439,6 +449,7 @@ function liribotSpotify(songReq) {
     //If no selection was made (i.e. inputs[3]), run the aceOfBase fx and stop this fx.
     if (!songReq) {
         aceOfBase();
+        inquirerMenu();
         return;
     }
 
@@ -464,6 +475,7 @@ function liribotSpotify(songReq) {
         //Log the results
         console.log("Results for: " + songReq);
         console.log(albumList);
+        inquirerMenu();
     }); //End Spotify Search
 
     
@@ -501,5 +513,6 @@ function liribotTwitter(handle) {
             };
             console.log(tweetList);
         };
+        inquirerMenu();
     });
 };
