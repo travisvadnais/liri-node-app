@@ -1,6 +1,10 @@
 # LIRI Node App
 Liri Node App Week 10 Assignment
 
+Link to recording:
+> https://drive.google.com/open?id=1XjOwPPSQXFns1dCQDMvR0g30C16PNpCd
+> (Let me know if you can't access)
+
 ## HOW TO USE IT
 
 * Open the liri.js document in your command prompt;
