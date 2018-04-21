@@ -188,16 +188,8 @@ function searchSpotify() {
         
         //Check for errors
         if (err) {
-            //Catches internet-specific errors
-            if (err == "RequestError: Error: getaddrinfo ENOTFOUND accounts.spotify.com accounts.spotify.com:443") {
-                console.log(colors.red.bold("\n! ! ! ! ERROR ! ! ! ! ERROR ! ! ! ! ERROR ! ! ! ! ERROR ! ! ! !\n"));
-                console.log("Your internet is down!  Try again later");
-                console.log(colors.red.bold("\n! ! ! ! ERROR ! ! ! ! ERROR ! ! ! ! ERROR ! ! ! ! ERROR ! ! ! !\n"));
-                return;
-            }
-            else {
-                return console.log("Error Occurred: " + err);
-            }
+            aceOfBase();
+            return;
         };
 
         //Set up a variable to navigate through the docs more easily
@@ -545,13 +537,15 @@ function liribotSpotify(songReq) {
         return;
     }
     //Add the song to the array so it doesn't just give you Ace of Base
-    albumList[0] = songReq;
+    //albumList[0] = songReq;
 
     //Search Spotify using the keys (S)
     S.search({type: 'track', query: songReq, limit: 2}, function(err, data) {
         //Check for errors
+        
         if (err) {
-            return console.log("Error Occurred: " + err);
+            aceOfBase();
+            return;
         };
 
         //Put data info in a variable for clarity
