@@ -223,18 +223,38 @@ function searchSpotify() {
             console.log("------------MOST POPULAR------------".america);
             console.log("\n" + '"'.blue + (titleTrack + '"').blue + " by: " + colors.blue(band[0].album.artists[0].name)); 
             console.log("\nOff the album: " + colors.blue(band[0].album.name));
-            console.log("\nCheck out a clip here!");
-            console.log(colors.blue(band[0].preview_url));
+            //Check to see if there's a preview URL.  If not, offer the full album
+            if (band[0].preview_url != null) {
+                console.log("\nCheck out a clip here!");
+                console.log(colors.blue(band[0].preview_url));
+            }
+            else {
+                console.log("\nNo preview available, but check out the full album w/ your Spotify account here!");
+                console.log(colors.blue(band[0].external_urls.spotify));
+                console.log(colors.blue.bold("\n****************************************************************************************************************"));
+            }
 
-            //Display the second return song
-            console.log("\n------------RUNNER UP------------".america);
-            console.log("\n" + '"'.yellow.bold + (titleTrack + '"').yellow.bold + " by: " + colors.yellow.bold(band[1].album.artists[0].name)); 
-            console.log("\nOff the album: " + colors.yellow.bold(band[1].album.name));
-            console.log("\nCheck out a clip here!");
-            console.log(colors.yellow.bold(band[1].preview_url));
-            console.log(colors.yellow.bold("\n****************************************************************************************************************"));
+            //Display the second return song, assuming there is one.  If not, just throw some lines out there.
+            if (band[1] != null) {
+                console.log("\n------------RUNNER UP------------".america);
+                console.log("\n" + '"'.yellow.bold + (titleTrack + '"').yellow.bold + " by: " + colors.yellow.bold(band[1].album.artists[0].name)); 
+                console.log("\nOff the album: " + colors.yellow.bold(band[1].album.name));
+                //Check to see if there's a preview URL.  If not, offer the full album
+                if (band[1].preview_url != null) {    
+                    console.log("\nCheck out a clip here!");
+                    console.log(colors.yellow.bold(band[1].preview_url));
+                    console.log(colors.yellow.bold("\n****************************************************************************************************************"));
+                }
+                else {
+                    console.log("\nNo preview available, but check out the full album w/ your Spotify account here!");
+                    console.log(colors.yellow(band[1].external_urls.spotify));
+                    console.log(colors.yellow.bold("\n****************************************************************************************************************"));
+                } 
+            }
+            else {
+                console.log(colors.blue("\n*************************************************************************************************************\n"));
+            }       
         }
-       
     }); //End Spotify Search
 };
 
@@ -551,22 +571,44 @@ function liribotSpotify(songReq) {
             // Directly return the joined string
             songReq = splitStr.join(' '); 
 
-        //If no errors, add an object into the albumList array for each album containing the song, up to 5.
-        //Display the first return song
-        console.log(colors.blue("\n************************************************************************************************************\n"));
-        console.log("------------MOST POPULAR------------".america);
-        console.log("\n" + '"'.blue + (songReq + '"').blue + " by: " + colors.blue(band[0].album.artists[0].name)); 
-        console.log("\nOff the album: " + colors.blue(band[0].album.name));
-        console.log("\nCheck out a clip here!");
-        console.log(colors.blue(band[0].preview_url));
+            //If no errors, add an object into the albumList array for each album containing the song, up to 5.
+            //Display the first return song
+            console.log(colors.blue("\n************************************************************************************************************\n"));
+            console.log("------------MOST POPULAR------------".america);
+            console.log("\n" + '"'.blue + (songReq + '"').blue + " by: " + colors.blue(band[0].album.artists[0].name)); 
+            console.log("\nOff the album: " + colors.blue(band[0].album.name));
+            //Check to see if there's a preview URL.  If not, offer the full album
+            if (band[0].preview_url != null) {
+                console.log("\nCheck out a clip here!");
+                console.log(colors.blue(band[0].preview_url));
+            }
+            else {
+                console.log("\nNo preview available, but check out the full album w/ your Spotify account here!");
+                console.log(colors.blue(band[0].external_urls.spotify));
+                console.log(colors.blue.bold("\n****************************************************************************************************************"));
+            }
 
-        //Display the second return song
-        console.log("\n------------RUNNER UP------------".america);
-        console.log("\n" + '"'.yellow.bold + (songReq + '"').yellow.bold + " by: " + colors.yellow.bold(band[1].album.artists[0].name)); 
-        console.log("\nOff the album: " + colors.yellow.bold(band[1].album.name));
-        console.log("\nCheck out a clip here!");
-        console.log(colors.yellow.bold(band[1].preview_url));
-        console.log(colors.yellow.bold("\n****************************************************************************************************************"));
+            //Display the second return song - also catch the error if there is only one instance of that song
+            if (band[1] != null) {
+                console.log("\n------------RUNNER UP------------".america);
+                console.log("\n" + '"'.yellow.bold + (songReq + '"').yellow.bold + " by: " + colors.yellow.bold(band[1].album.artists[0].name)); 
+                console.log("\nOff the album: " + colors.yellow.bold(band[1].album.name));
+                //Check to see if there's a preview available for the second song
+                if (band[1].preview_url != null) {    
+                    console.log("\nCheck out a clip here!");
+                    console.log(colors.yellow.bold(band[1].preview_url));
+                    console.log(colors.yellow.bold("\n****************************************************************************************************************"));
+                }
+                //If not, link to the full album
+                else {
+                    console.log("\nNo preview available, but check out the full album w/ your Spotify account here!");
+                    console.log(colors.yellow(band[1].external_urls.spotify));
+                    console.log(colors.yellow.bold("\n****************************************************************************************************************"));
+                }             
+            }
+            else {
+                console.log(colors.blue("\n*************************************************************************************************************\n"));
+            }
         }
         // //Run a fx to make sure at least 1 result came back
         checkDefault(albumList, songReq);
