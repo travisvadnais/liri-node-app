@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/travisvadnais/liri-node-app#readme",
   "dependencies": {
+    "colors": "^1.2.1",
     "dotenv": "^5.0.1",
     "http": "0.0.0",
     "inquirer": "^5.2.0",
