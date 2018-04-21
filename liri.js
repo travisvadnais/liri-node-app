@@ -176,6 +176,8 @@ function searchSpotify() {
 
     //If no selection was made (i.e. inputs[3]), run the aceOfBase fx and stop this fx.
     if (!inputs[3]) {
+        console.log(colors.blue("\n************************************************************************************************************\n"));
+        console.log(colors.red("You didn't select a song!  Try this one instead!"));        
         aceOfBase();
         return;
     }
@@ -188,6 +190,8 @@ function searchSpotify() {
         
         //Check for errors
         if (err) {
+            console.log(colors.blue("\n************************************************************************************************************\n"));
+            console.log(colors.red("That's not a real song!  Try this one instead!"));        
             aceOfBase();
             return;
         };
@@ -418,8 +422,6 @@ function bsb(song) {
 function aceOfBase() {
 
     //Log Ace of Base of the user doesn't input a song
-    console.log(colors.blue("\n************************************************************************************************************\n"));
-    console.log(colors.red("You didn't select a song.  Try this one instead!"));
     console.log(colors.blue("\nThe Sign") + " by: " + colors.blue("Ace of Base")); 
     console.log("\nOff the album: " + colors.blue('The Sign (US Album) [Remastered]'));
     console.log("\nCheck out a clip here!");
@@ -521,7 +523,6 @@ function liribotOmdb(movieReq) {
 
 //Song function when initiated from Inquirer
 function liribotSpotify(songReq) {
-
     //Log the command and movie name
     fs.appendFile("log.txt", ["\n", "spotify-this-song", songReq], function(err) {
         if (err) throw err;
@@ -532,18 +533,22 @@ function liribotSpotify(songReq) {
     
     //If no selection was made (i.e. inputs[3]), run the aceOfBase fx and stop this fx.
     if (!songReq) {
+        console.log(colors.blue("\n************************************************************************************************************\n"));
+        console.log(colors.red("You didn't select a song!  Try this one instead!"));        
         aceOfBase();
         inquirerMenu();
         return;
     }
     //Add the song to the array so it doesn't just give you Ace of Base
-    //albumList[0] = songReq;
+    albumList[0] = songReq;
 
     //Search Spotify using the keys (S)
     S.search({type: 'track', query: songReq, limit: 2}, function(err, data) {
         //Check for errors
         
         if (err) {
+            console.log(colors.blue("\n************************************************************************************************************\n"));
+            console.log(colors.red("That's not a real song!  Try this one instead!"));        
             aceOfBase();
             return;
         };
@@ -605,7 +610,7 @@ function liribotSpotify(songReq) {
             }
         }
         // //Run a fx to make sure at least 1 result came back
-        checkDefault(albumList, songReq);
+        //checkDefault(albumList, songReq);
 
         inquirerMenu();
     }); //End Spotify Search
